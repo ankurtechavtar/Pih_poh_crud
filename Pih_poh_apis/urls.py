@@ -16,7 +16,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pihpoh.views import HomeView,SignupListView,SignupCreateView
+from pihpoh.views import HomeView,SignupListView,SignupCreateView,LoginAPIView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,5 +25,7 @@ urlpatterns = [
     path('get/signup/', SignupListView.as_view(), name='signup-list'),
 
     path('post/signup/', SignupCreateView.as_view(), name='signup-create'),
+
+    path('post/login/', LoginAPIView.as_view(), name='login'),
 
 ]
