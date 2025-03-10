@@ -16,11 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from pihpoh.views import HomeView,SignupListView,SignupCreateView,LoginAPIView,DanceLevelListView, DanceLevelCreateView, DanceLevelUpdateView, DanceLevelDeleteView,InterestLevelListView, InterestLevelCreateView, InterestLevelUpdateView,InterestLevelDeleteView,StyleLevelListView, StyleLevelCreateView, StyleLevelUpdateView, StyleLevelDeleteView
-
+from pihpoh.views import HomeView,SignupListView,SignupCreateView,LoginAPIView,DanceLevelListView, DanceLevelCreateView, DanceLevelUpdateView, DanceLevelDeleteView,InterestLevelListView, InterestLevelCreateView, InterestLevelUpdateView,InterestLevelDeleteView,StyleLevelListView, StyleLevelCreateView, StyleLevelUpdateView, StyleLevelDeleteView,GetUserInterest, PostUserInterest, PutUserInterest, DeleteUserInterest , UserProfileView, UpdateUserProfileView,UploadProfilePictureView, ChangePasswordView,DeleteAccountView
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path("",HomeView.as_view(),name="home"),
+    # Signup & Login APIs
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
     path('get/signup/', SignupListView.as_view(), name='signup-list'),
 
@@ -53,5 +56,27 @@ urlpatterns = [
     path('PutStyle/<int:id>/', StyleLevelUpdateView.as_view(), name='StyleLevel-update'),  # PUT for update
 
     path('DeleteStyle/<int:id>/', StyleLevelDeleteView.as_view(), name='StyleLevel-delete'),  # DELETE for delete
+
+    # User Interest
+    path('GetUserInterest/', GetUserInterest.as_view(), name='get_user_interest'),
+     
+    path('PostUserInterest/', PostUserInterest.as_view(), name='post_user_interest'), 
+
+    path('PutUserInterest/<int:id>/', PutUserInterest.as_view(), name='put_user_interest'), 
+
+    path('DeleteUserInterest/<int:id>/', DeleteUserInterest.as_view(), name='delete_user_interest'),
+
+    #profile management
+
+    path('profile/<int:id>/', UserProfileView.as_view(), name='user-profile'),
+
+    path('profile/update/<int:id>/', UpdateUserProfileView.as_view(), name='update-profile'),
+
+    path('profile/upload-picture/<int:id>/', UploadProfilePictureView.as_view(), name='upload-profile-picture'),
+
+    path('profile/change-password/<int:id>/', ChangePasswordView.as_view(), name='change-password'),
+
+    path('profile/delete-account/<int:id>/', DeleteAccountView.as_view(), name='delete-account'),
+
 
 ]

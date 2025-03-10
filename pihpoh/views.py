@@ -116,5 +116,104 @@ class StyleLevelDeleteView(generics.DestroyAPIView):
 
 
 
+from .models import UserInterest
+from .serializers import UserInterestSerializer
+
+
+class GetUserInterest(generics.ListAPIView):
+    queryset = UserInterest.objects.all()
+    serializer_class = UserInterestSerializer
+
+
+class PostUserInterest(generics.CreateAPIView):
+    queryset = UserInterest.objects.all()
+    serializer_class = UserInterestSerializer
+
+
+class PutUserInterest(generics.UpdateAPIView):
+    queryset = UserInterest.objects.all()
+    serializer_class = UserInterestSerializer
+    lookup_field = 'id' 
+
+
+class DeleteUserInterest(generics.DestroyAPIView):
+    queryset = UserInterest.objects.all()
+    serializer_class = UserInterestSerializer
+    lookup_field = 'id'  
+
+#Profile management related views
+
+from django.contrib.auth import update_session_auth_hash
+from django.shortcuts import get_object_or_404
+from rest_framework import generics, status
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from .permissions import IsOwnerOrAdmin
+from .models import CustomUser
+from .serializers import (
+    UserProfileSerializer, UpdateUserProfileSerializer,
+    UploadProfilePictureSerializer, ChangePasswordSerializer
+)
+
+
+class UserProfileView(generics.RetrieveAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+    lookup_field = "id"
+
+
+class UpdateUserProfileView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UpdateUserProfileSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+    lookup_field = "id"
+
+
+class UploadProfilePictureView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = UploadProfilePictureSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+    lookup_field = "id"
+
+
+class ChangePasswordView(generics.UpdateAPIView):
+    queryset = CustomUser.objects.all()
+    serializer_class = ChangePasswordSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]
+    lookup_field = "id"
+
+    def update(self, request, *args, **kwargs):
+        user = self.get_object()
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid():
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+
+            if not user.check_password(old_password):
+                return Response({"error": "Old password is incorrect"}, status=status.HTTP_400_BAD_REQUEST)
+
+            user.set_password(new_password)
+            user.save()
+            update_session_auth_hash(request, user)  # Keep user logged in after password change
+            return Response({"message": "Password changed successfully"}, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteAccountView(generics.DestroyAPIView):
+    queryset = CustomUser.objects.all()
+    lookup_field = "id"
+    permission_classes = [IsAuthenticated, IsOwnerOrAdmin]  # Ensure only logged-in users can delete
+
+    def delete(self, request, *args, **kwargs):
+        user = self.get_object()
+        user.delete()
+        return Response({"message": "Your account has been deleted successfully."}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+
+
 # render url:-
 # https://dashboard.render.com/web/srv-cv5us27noe9s73boee10/deploys/dep-cv61thvnoe9s73bppn20

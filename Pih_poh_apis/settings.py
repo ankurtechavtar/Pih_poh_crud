@@ -56,6 +56,9 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'Pih_poh_apis.urls'
 
+AUTH_USER_MODEL = 'pihpoh.CustomUser'
+
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -116,7 +119,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
+# AUTH_USER_MODEL = 'pihpoh.CustomUser'
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
