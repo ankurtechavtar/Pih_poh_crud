@@ -42,3 +42,24 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError({"password": ["Invalid password"]})
 
         return user
+
+
+
+from .models import DanceLevel,Interest,Style
+
+class DanceLevelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DanceLevel
+        fields = '__all__'
+
+class IntersetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Interest
+        fields = '__all__'
+
+class StyleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Style
+        fields = '__all__'
+
+
